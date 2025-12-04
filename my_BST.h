@@ -1,7 +1,7 @@
 #pragma once
 #include<iostream>
-
 using namespace std;
+
 class node {
 private:
     string word;
@@ -11,7 +11,7 @@ private:
     node* right;
 
 public:
-    node(string w, string m, node* l = NULL, node* r = NULL) :word(w), meaning(m), left(l), right(r) {}
+    node(string w, string m, node* l = nullptr, node* r = nullptr) :word(w), meaning(m), left(l), right(r) {}
 
     string getword() { return word; }
     string getmeaning() { return meaning; }
@@ -30,10 +30,10 @@ public:
     void showAll(string s = "") {
         cout << s;
         show();
-        if (left != NULL) {
+        if (left != nullptr) {
             left->showAll(s + "  ");
         }
-        if (right != NULL) {
+        if (right != nullptr) {
             right->showAll(s + "  ");
         }
     }
@@ -43,13 +43,13 @@ class BST {
 private:
     node* root;
 public:
-    BST(node* r = NULL) :root(r) {}
+    BST(node* r = nullptr) :root(r) {}
     ~BST() {
         release(root);
     }
 
     void release(node* current) {
-        if (current != NULL) {
+        if (current != nullptr) {
             release(current->getleft());
             release(current->getright());
             delete current;
@@ -59,9 +59,9 @@ public:
     void add(node* ptr) {
         if (this->isempty()) { root = ptr; return; }
         node* p = root;
-        while (1) {
+        while (true) {
             if (p->getword() < ptr->getword()) {
-                if (p->getright() != NULL) {
+                if (p->getright() != nullptr) {
                     p = p->getright();
                     continue;
                 }
@@ -71,7 +71,7 @@ public:
                 }
             }
             else if (p->getword() > ptr->getword()) {
-                if (p->getleft() != NULL) {
+                if (p->getleft() != nullptr) {
                     p = p->getleft();
                     continue;
                 }
@@ -91,34 +91,97 @@ public:
         add(new node(word, meaning));
     }
 
-    bool remove(node* ptr) {
-
-    }
-
-    node* find(node* ptr) {
-        if (this->isempty()) { return NULL; }
+    node* find(string w) {
+        if (this->isempty()) { return nullptr; }
         node* p = root;
-        while (1) {
-            if (p->getword() > ptr->getword() && p->getright() != NULL) {
+        while (true) {
+            if (p->getword() < w && p->getright() != nullptr) {
                 p = p->getright();
                 continue;
             }
-            else if (p->getword() < ptr->getword() && p->getleft() != NULL) {
+            else if (p->getword() > w && p->getleft() != nullptr) {
                 p = p->getleft();
                 continue;
             }
-            else if (p->getword() == ptr->getword()) {
+            else if (p->getword() == w) {
                 return p;
             }
             else {
                 break;
             }
         }
-        return NULL;
+        return nullptr;
+    }
+
+    bool remove(string word) {
+        node* current = root;
+        node* back = nullptr;
+        while (current != nullptr) {
+            if (word < current->getword()) {
+                back = current;
+                current = current->getleft();
+            }
+            else if (word > current->getword()) {
+                back = current;
+                current = current->getright();
+            }
+            else {
+                break;
+            }
+        }
+        if (current == nullptr) {//找不到
+            return false;
+        }
+        else if (current->getleft() == nullptr && current->getright() == nullptr) {//叶子结点
+            if (back != nullptr) {
+                if (back->getleft() == current)back->setleft(nullptr);
+                if (back->getright() == current)back->setright(nullptr);
+            }
+            else {
+                root = nullptr;
+            }
+            delete(current);
+        }
+        else if (current->getleft() != nullptr && current->getright() == nullptr) {//只有左孩子
+            if (back != nullptr) {
+                if (back->getleft() == current)back->setleft(current->getleft());
+                if (back->getright() == current)back->setright(current->getleft());
+            }
+            else {
+                root = current->getleft();
+            }
+            delete current;
+        }
+        else if (current->getleft() == nullptr && current->getright() != nullptr) {//只有右孩子
+            if (back != nullptr) {
+                if (back->getleft() == current)back->setleft(current->getright());
+                if (back->getright() == current)back->setright(current->getright());
+            }
+            else {
+                root = current->getright();
+            }
+            delete current;
+        }
+        else {//有两个孩子
+            node* Replace = current->getleft();
+            node* reBack = current;
+            while (Replace != nullptr && Replace->getright() != nullptr) {
+                reBack = Replace;
+                Replace = Replace->getright();
+            }
+
+            current->setword(Replace->getword());
+            current->setmeaning(Replace->getmeaning());
+
+            if (reBack->getleft() == Replace)reBack->setleft(Replace->getleft());
+            if (reBack->getright() == Replace)reBack->setright(Replace->getleft());
+            delete Replace;
+        }
+        return true;
     }
 
     bool isempty() {
-        if (root == NULL) {
+        if (root == nullptr) {
             return true;
         }
         else
@@ -126,7 +189,7 @@ public:
     }
 
     void show() {
-        if (root != NULL) {
+        if (root != nullptr) {
             root->showAll();
         }
     }
