@@ -33,13 +33,22 @@ private:
 public:
 	BST() {}
 
-	void add(node* ptr) {}
+	void add(node* ptr) {
+	
+	
+	}
 
 	bool remove() {}
 
 	node* find() {}
 
-	bool isempty() {}
+	bool isempty() {
+		if (root == NULL) {
+			return true;
+		}
+		else
+			return false;
+	}
 
 	void show() {}
 
