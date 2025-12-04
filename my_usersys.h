@@ -81,9 +81,6 @@ public:
 	}
 
 	void display() {
-		if (dic.isEmpty())
-			cout << "´ÊµäÎª¿Õ£¡" << endl;
-		else
 		dic.showStruct();
 	}
 
